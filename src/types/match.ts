@@ -36,6 +36,23 @@ export interface MatchEvent {
   disputeType?: string;
 }
 
+export interface Signature {
+  name: string;
+  time: string;
+  signed: boolean;
+}
+
+export interface MatchConfirmation {
+  homeCaptain: Signature;
+  awayCaptain: Signature;
+  referee: {
+    name: string;
+    time: string;
+    confirmed: boolean;
+  };
+  confirmedAt?: string;
+}
+
 export interface Match {
   id: string;
   tournament: string;
@@ -55,6 +72,7 @@ export interface Match {
     home: number;
     away: number;
   };
+  confirmation?: MatchConfirmation;
 }
 
 export interface Tournament {

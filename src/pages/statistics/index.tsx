@@ -11,6 +11,7 @@ type RankTab = 'goals' | 'assists' | 'cards';
 
 const StatisticsPage: React.FC = () => {
   const currentMatch = useMatchStore((state) => state.currentMatch);
+  const finishedMatches = useMatchStore((state) => state.finishedMatches);
   const [activeTab, setActiveTab] = useState<RankTab>('goals');
 
   const { homeTeam, awayTeam } = currentMatch;
@@ -105,6 +106,12 @@ const StatisticsPage: React.FC = () => {
   const handleConfirm = () => {
     Taro.navigateTo({
       url: '/pages/confirm/index'
+    });
+  };
+
+  const handleViewHistory = () => {
+    Taro.navigateTo({
+      url: '/pages/report-history/index'
     });
   };
 
@@ -215,6 +222,15 @@ const StatisticsPage: React.FC = () => {
             ))
           )}
         </ScrollView>
+      </View>
+
+      <View className={styles.historyEntry} onClick={handleViewHistory}>
+        <View className={styles.historyIcon}>📋</View>
+        <View className={styles.historyInfo}>
+          <Text className={styles.historyTitle}>成绩单历史</Text>
+          <Text className={styles.historyDesc}>已完成 {finishedMatches.length} 场比赛记录，点击查看</Text>
+        </View>
+        <Text className={styles.historyArrow}>→</Text>
       </View>
 
       <View className={styles.bottomActions}>

@@ -1,33 +1,30 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { View, Text, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import styles from './index.module.scss';
 import { useMatchStore } from '@/store/useMatchStore';
 import classnames from 'classnames';
-
-interface Signature {
-  name: string;
-  time: string;
-  signed: boolean;
-}
+import type { Signature } from '@/types/match';
 
 const ConfirmPage: React.FC = () => {
   const currentMatch = useMatchStore((state) => state.currentMatch);
   const finishMatch = useMatchStore((state) => state.finishMatch);
+  const setConfirmation = useMatchStore((state) => state.setConfirmation);
+  const confirmation = currentMatch.confirmation;
 
-  const [homeSignature, setHomeSignature] = useState<Signature>({
-    name: '',
-    time: '',
-    signed: false
-  });
+  useEffect(() => {
+    if (!confirmation) {
+      setConfirmation({
+        homeCaptain: { name: '', time: '', signed: false },
+        awayCaptain: { name: '', time: '', signed: false },
+        referee: { name: '张裁判', time: '', confirmed: false }
+      });
+    }
+  }, [confirmation, setConfirmation]);
 
-  const [awaySignature, setAwaySignature] = useState<Signature>({
-    name: '',
-    time: '',
-    signed: false
-  });
-
-  const [refereeName] = useState('张裁判');
+  const homeSignature: Signature = confirmation?.homeCaptain || { name: '', time: '', signed: false };
+  const awaySignature: Signature = confirmation?.awayCaptain || { name: '', time: '', signed: false };
+  const refereeInfo = confirmation?.referee || { name: '张裁判', time: '', confirmed: false };
 
   const eventCount = useMemo(() => {
     const goals = currentMatch.events.filter(e => e.type === 'goal').length;
@@ -37,7 +34,7 @@ const ConfirmPage: React.FC = () => {
     return { goals, yellows, reds, subs };
   }, [currentMatch.events]);
 
-  const allSigned = homeSignature.signed && awaySignature.signed;
+  const allSigned = homeSignature.signed && awaySignature.signed && refereeInfo.confirmed;
 
   const handleSign = (team: 'home' | 'away') => {
     Taro.showModal({
@@ -56,9 +53,9 @@ const ConfirmPage: React.FC = () => {
           };
 
           if (team === 'home') {
-            setHomeSignature(signature);
+            setConfirmation({ homeCaptain: signature });
           } else {
-            setAwaySignature(signature);
+            setConfirmation({ awayCaptain: signature });
           }
 
           Taro.showToast({
@@ -72,10 +69,26 @@ const ConfirmPage: React.FC = () => {
     });
   };
 
+  const handleConfirmReferee = () => {
+    const now = new Date();
+    const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+    setConfirmation({
+      referee: {
+        ...refereeInfo,
+        time: timeStr,
+        confirmed: true
+      }
+    });
+    Taro.showToast({
+      title: '裁判已确认',
+      icon: 'success'
+    });
+  };
+
   const handleConfirm = () => {
     if (!allSigned) {
       Taro.showToast({
-        title: '请双方队长签字确认',
+        title: '请双方队长签字和裁判确认',
         icon: 'none'
       });
       return;
@@ -95,7 +108,7 @@ const ConfirmPage: React.FC = () => {
             score: `${currentMatch.homeTeam.score}-${currentMatch.awayTeam.score}`,
             homeCaptain: homeSignature.name,
             awayCaptain: awaySignature.name,
-            referee: refereeName,
+            referee: refereeInfo.name,
             eventsCount: currentMatch.events.length
           });
 
@@ -106,8 +119,8 @@ const ConfirmPage: React.FC = () => {
           });
 
           setTimeout(() => {
-            Taro.switchTab({
-              url: '/pages/statistics/index'
+            Taro.navigateTo({
+              url: '/pages/score-report/index'
             });
           }, 2000);
         }
@@ -220,14 +233,27 @@ const ConfirmPage: React.FC = () => {
 
         <View className={styles.refereeSection}>
           <Text className={styles.sectionTitle}>裁判信息</Text>
-          <View className={styles.refereeInfo}>
+          <View className={classnames(styles.refereeInfo, refereeInfo.confirmed && styles.signed)}>
             <View className={styles.refereeAvatar}>
               <Text className={styles.avatarText}>裁</Text>
             </View>
             <View className={styles.refereeDetail}>
-              <Text className={styles.refereeName}>{refereeName}</Text>
-              <Text className={styles.refereeRole}>主裁判</Text>
+              <Text className={styles.refereeName}>{refereeInfo.name}</Text>
+              <Text className={styles.refereeRole}>
+                {refereeInfo.confirmed ? `已确认 · ${refereeInfo.time}` : '主裁判 · 待确认'}
+              </Text>
             </View>
+            {!refereeInfo.confirmed && (
+              <Button
+                className={styles.refereeConfirmBtn}
+                onClick={handleConfirmReferee}
+              >
+                确认
+              </Button>
+            )}
+            {refereeInfo.confirmed && (
+              <Text className={styles.checkIcon}>✓</Text>
+            )}
           </View>
         </View>
       </View>

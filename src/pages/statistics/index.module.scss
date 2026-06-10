@@ -3,8 +3,8 @@
 .page {
   min-height: 100vh;
   background: $color-bg-page;
-  padding: $spacing-md $page-padding;
-  padding-bottom: calc(200rpx + env(safe-area-inset-bottom));
+  padding: $spacing-md 0;
+  padding-bottom: calc(360rpx + env(safe-area-inset-bottom));
 }
 
 .scoreOverview {
@@ -249,7 +249,7 @@
 
 .bottomActions {
   position: fixed;
-  bottom: calc(120rpx + env(safe-area-inset-bottom));
+  bottom: calc(40rpx + env(safe-area-inset-bottom));
   left: $page-padding;
   right: $page-padding;
   display: flex;
@@ -279,4 +279,49 @@
 .confirmBtn {
   background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
   color: $color-text-white;
+}
+
+.historyEntry {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  border: 1rpx solid $color-border;
+  margin: 0 $page-padding $spacing-md;
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.98);
+    border-color: $color-primary;
+  }
+}
+
+.historyIcon {
+  font-size: 48rpx;
+  flex-shrink: 0;
+}
+
+.historyInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.historyTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-xs;
+}
+
+.historyDesc {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.historyArrow {
+  font-size: $font-size-lg;
+  color: $color-primary;
+  flex-shrink: 0;
 }

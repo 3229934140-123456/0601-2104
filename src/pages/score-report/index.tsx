@@ -1,14 +1,14 @@
 import React, { useMemo } from 'react';
-import { View, Text, ScrollView, Button } from '@tarojs/components';
+import { View, Text, ScrollView, Button, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import styles from './index.module.scss';
 import { useMatchStore } from '@/store/useMatchStore';
-import { getEventLabel, getStatusText } from '@/utils/format';
+import { getEventLabel, getStatusText, getEventColor } from '@/utils/format';
 import classnames from 'classnames';
 
 const ScoreReportPage: React.FC = () => {
   const currentMatch = useMatchStore((state) => state.currentMatch);
-  const { homeTeam, awayTeam, events } = currentMatch;
+  const { homeTeam, awayTeam, events, confirmation } = currentMatch;
 
   const stats = useMemo(() => {
     const homeGoals = homeTeam.players.reduce((s, p) => s + p.goals, 0);
@@ -22,16 +22,26 @@ const ScoreReportPage: React.FC = () => {
     return { homeGoals, awayGoals, homeYellow, awayYellow, homeRed, awayRed, homeAssists, awayAssists };
   }, [homeTeam, awayTeam]);
 
-  const goalEvents = useMemo(() => events.filter(e => e.type === 'goal'), [events]);
-  const cardEvents = useMemo(() => events.filter(e => e.type === 'yellowCard' || e.type === 'redCard'), [events]);
-  const timeoutEvents = useMemo(() => events.filter(e => e.type === 'timeout'), [events]);
-  const disputeEvents = useMemo(() => events.filter(e => e.type === 'dispute'), [events]);
+  const sortedEvents = useMemo(() => {
+    return [...events].sort((a, b) => {
+      if (a.period !== b.period) return a.period - b.period;
+      const [aMin, aSec] = a.time.split(':').map(Number);
+      const [bMin, bSec] = b.time.split(':').map(Number);
+      return (aMin * 60 + aSec) - (bMin * 60 + bSec);
+    });
+  }, [events]);
 
   const getBadgeClass = (type: string) => {
     const map: Record<string, string> = {
       goal: styles.badgeGoal,
+      assist: styles.badgeGoal,
       yellowCard: styles.badgeYellow,
-      redCard: styles.badgeRed
+      redCard: styles.badgeRed,
+      substitution: styles.badgeSub,
+      timeout: styles.badgeTimeout,
+      dispute: styles.badgeDispute,
+      scoreDeduct: styles.badgeDeduct,
+      period: styles.badgePeriod
     };
     return map[type] || styles.badgeOther;
   };
@@ -46,6 +56,13 @@ const ScoreReportPage: React.FC = () => {
 
   const handleBack = () => {
     Taro.navigateBack();
+  };
+
+  const handlePreviewPhoto = (photo: string, allPhotos: string[]) => {
+    Taro.previewImage({
+      current: photo,
+      urls: allPhotos
+    });
   };
 
   return (
@@ -77,7 +94,7 @@ const ScoreReportPage: React.FC = () => {
             </View>
           </View>
           <Text className={styles.reportMeta}>
-            {getStatusText(currentMatch.status)} · 第{currentMatch.period}/{currentMatch.totalPeriods}节 · {currentMatch.currentTime}
+            {getStatusText(currentMatch.status)} · 第{currentMatch.period}/{currentMatch.totalPeriods}节 · 全场{currentMatch.currentTime}
           </Text>
         </View>
       </View>
@@ -119,71 +136,70 @@ const ScoreReportPage: React.FC = () => {
           </View>
           <View className={styles.statItem}>
             <Text className={styles.label}>主队暂停</Text>
-            <Text className={styles.value}>{currentMatch.timeouts.home}次剩余</Text>
+            <Text className={styles.value}>{3 - currentMatch.timeouts.home}次使用</Text>
           </View>
           <View className={styles.statItem}>
             <Text className={styles.label}>客队暂停</Text>
-            <Text className={styles.value}>{currentMatch.timeouts.away}次剩余</Text>
+            <Text className={styles.value}>{3 - currentMatch.timeouts.away}次使用</Text>
           </View>
         </View>
       </View>
 
-      {goalEvents.length > 0 && (
+      {sortedEvents.length > 0 && (
         <View className={styles.reportCard}>
-          <Text className={styles.sectionTitle}>进球明细</Text>
-          <View className={styles.eventList}>
-            {goalEvents.map(e => (
-              <View key={e.id} className={styles.eventRow}>
-                <Text className={styles.eventTime}>{e.time}</Text>
-                <View className={classnames(styles.eventTypeBadge, styles.badgeGoal)}>
-                  <Text>{getEventLabel(e.type)}</Text>
+          <Text className={styles.sectionTitle}>事件时间线</Text>
+          <View className={styles.timeline}>
+            {sortedEvents.map((event, index) => (
+              <View key={event.id} className={styles.timelineItem}>
+                <View className={styles.timelineLine}>
+                  <View 
+                    className={styles.timelineDot}
+                    style={{ backgroundColor: getEventColor(event.type) }}
+                  />
+                  {index < sortedEvents.length - 1 && <View className={styles.timelineConnector} />}
                 </View>
-                <Text className={styles.eventDesc}>{e.description}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-      )}
-
-      {cardEvents.length > 0 && (
-        <View className={styles.reportCard}>
-          <Text className={styles.sectionTitle}>红黄牌明细</Text>
-          <View className={styles.eventList}>
-            {cardEvents.map(e => (
-              <View key={e.id} className={styles.eventRow}>
-                <Text className={styles.eventTime}>{e.time}</Text>
-                <View className={classnames(styles.eventTypeBadge, getBadgeClass(e.type))}>
-                  <Text>{getEventLabel(e.type)}</Text>
+                <View className={styles.timelineContent}>
+                  <View className={styles.timelineHeader}>
+                    <View className={classnames(styles.eventTypeBadge, getBadgeClass(event.type))}>
+                      <Text>{getEventLabel(event.type)}</Text>
+                    </View>
+                    <Text className={styles.eventTime}>第{event.period}节 {event.time}</Text>
+                  </View>
+                  <View className={styles.eventBody}>
+                    {event.playerName && (
+                      <Text className={styles.playerName}>
+                        {event.teamId === homeTeam.id ? '主队' : event.teamId === awayTeam.id ? '客队' : ''} {event.playerName}
+                      </Text>
+                    )}
+                    {event.assistPlayerName && (
+                      <Text className={styles.assistName}> 助攻: {event.assistPlayerName}</Text>
+                    )}
+                  </View>
+                  <Text className={styles.eventDesc}>{event.description}</Text>
+                  {(event.photos && event.photos.length > 0) && (
+                    <View className={styles.photoRow}>
+                      {event.photos.map((photo, idx) => (
+                        <Image
+                          key={idx}
+                          className={styles.photoThumb}
+                          src={photo}
+                          mode='aspectFill'
+                          onClick={() => handlePreviewPhoto(photo, event.photos!)}
+                        />
+                      ))}
+                    </View>
+                  )}
+                  {event.photoUrl && (!event.photos || event.photos.length === 0) && (
+                    <View className={styles.photoRow}>
+                      <Image
+                        className={styles.photoThumb}
+                        src={event.photoUrl}
+                        mode='aspectFill'
+                        onClick={() => handlePreviewPhoto(event.photoUrl!, [event.photoUrl!])}
+                      />
+                    </View>
+                  )}
                 </View>
-                <Text className={styles.eventDesc}>{e.description}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-      )}
-
-      {timeoutEvents.length > 0 && (
-        <View className={styles.reportCard}>
-          <Text className={styles.sectionTitle}>暂停记录</Text>
-          <View className={styles.eventList}>
-            {timeoutEvents.map(e => (
-              <View key={e.id} className={styles.eventRow}>
-                <Text className={styles.eventTime}>{e.time}</Text>
-                <Text className={styles.eventDesc}>{e.description}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-      )}
-
-      {disputeEvents.length > 0 && (
-        <View className={styles.reportCard}>
-          <Text className={styles.sectionTitle}>争议记录</Text>
-          <View className={styles.eventList}>
-            {disputeEvents.map(e => (
-              <View key={e.id} className={styles.eventRow}>
-                <Text className={styles.eventTime}>{e.time}</Text>
-                <Text className={styles.eventDesc}>{e.description}</Text>
               </View>
             ))}
           </View>
@@ -209,6 +225,36 @@ const ScoreReportPage: React.FC = () => {
             <Text className={styles.label}>事件总数</Text>
             <Text className={styles.value}>{events.length} 条</Text>
           </View>
+          
+          {confirmation && (
+            <>
+              <View className={styles.confirmDivider} />
+              <View className={styles.confirmRow}>
+                <Text className={styles.label}>主队队长</Text>
+                <Text className={classnames(styles.value, confirmation.homeCaptain.signed && styles.signedValue)}>
+                  {confirmation.homeCaptain.signed ? `✓ ${confirmation.homeCaptain.name} · ${confirmation.homeCaptain.time}` : '未签名'}
+                </Text>
+              </View>
+              <View className={styles.confirmRow}>
+                <Text className={styles.label}>客队队长</Text>
+                <Text className={classnames(styles.value, confirmation.awayCaptain.signed && styles.signedValue)}>
+                  {confirmation.awayCaptain.signed ? `✓ ${confirmation.awayCaptain.name} · ${confirmation.awayCaptain.time}` : '未签名'}
+                </Text>
+              </View>
+              <View className={styles.confirmRow}>
+                <Text className={styles.label}>主裁判</Text>
+                <Text className={classnames(styles.value, confirmation.referee.confirmed && styles.signedValue)}>
+                  {confirmation.referee.confirmed ? `✓ ${confirmation.referee.name} · ${confirmation.referee.time}` : '未确认'}
+                </Text>
+              </View>
+              {confirmation.confirmedAt && (
+                <View className={styles.confirmRow}>
+                  <Text className={styles.label}>提交时间</Text>
+                  <Text className={styles.value}>{confirmation.confirmedAt}</Text>
+                </View>
+              )}
+            </>
+          )}
         </View>
       </View>
 

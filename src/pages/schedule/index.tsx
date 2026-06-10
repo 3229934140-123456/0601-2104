@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, ScrollView, Picker } from '@tarojs/components';
+import { View, Text, ScrollView, Picker, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import styles from './index.module.scss';
 import { matchList, tournaments, venues } from '@/data/mockData';
@@ -12,6 +12,7 @@ const SchedulePage: React.FC = () => {
   const [selectedTournament, setSelectedTournament] = useState<string>('');
   const [selectedVenue, setSelectedVenue] = useState<string>('');
   const setCurrentMatch = useMatchStore((state) => state.setCurrentMatch);
+  const finishedMatches = useMatchStore((state) => state.finishedMatches);
 
   const tournamentOptions = useMemo(() => [
     { label: '全部赛事', value: '' },
@@ -41,6 +42,12 @@ const SchedulePage: React.FC = () => {
     
     Taro.navigateTo({
       url: '/pages/match-detail/index'
+    });
+  };
+
+  const handleViewHistory = () => {
+    Taro.navigateTo({
+      url: '/pages/report-history/index'
     });
   };
 
@@ -92,6 +99,15 @@ const SchedulePage: React.FC = () => {
             <Text className={styles.filterArrow}>▼</Text>
           </View>
         </Picker>
+      </View>
+
+      <View className={styles.quickEntry} onClick={handleViewHistory}>
+        <View className={styles.quickIcon}>📋</View>
+        <View className={styles.quickInfo}>
+          <Text className={styles.quickTitle}>成绩单历史</Text>
+          <Text className={styles.quickDesc}>已完成 {finishedMatches.length} 场比赛记录</Text>
+        </View>
+        <Text className={styles.quickArrow}>→</Text>
       </View>
 
       <Text className={styles.sectionTitle}>今日赛程</Text>

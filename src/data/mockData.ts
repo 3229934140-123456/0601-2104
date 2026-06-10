@@ -76,8 +76,8 @@ export const matchList: Match[] = [
     date: '2024-06-15',
     time: '14:00',
     status: 'upcoming',
-    homeTeam: { ...homeTeam, players: [] },
-    awayTeam: { ...awayTeam, players: [] },
+    homeTeam: { ...homeTeam },
+    awayTeam: { ...awayTeam },
     period: 1,
     totalPeriods: 2,
     periodDuration: 45,
@@ -97,7 +97,7 @@ export const matchList: Match[] = [
       id: 'team-3',
       name: '闪电队',
       color: '#22C55E',
-      players: [],
+      players: generatePlayers('team-3', 15, 1),
       score: 0,
       fouls: 0
     },
@@ -105,7 +105,7 @@ export const matchList: Match[] = [
       id: 'team-4',
       name: '猛虎队',
       color: '#EF4444',
-      players: [],
+      players: generatePlayers('team-4', 15, 1),
       score: 0,
       fouls: 0
     },
@@ -128,7 +128,7 @@ export const matchList: Match[] = [
       id: 'team-5',
       name: '雄鹰队',
       color: '#8B5CF6',
-      players: [],
+      players: generatePlayers('team-5', 12, 0),
       score: 0,
       fouls: 0
     },
@@ -136,7 +136,7 @@ export const matchList: Match[] = [
       id: 'team-6',
       name: '神龙队',
       color: '#EC4899',
-      players: [],
+      players: generatePlayers('team-6', 12, 0),
       score: 0,
       fouls: 0
     },
@@ -159,7 +159,12 @@ export const matchList: Match[] = [
       id: 'team-7',
       name: '猎豹队',
       color: '#F59E0B',
-      players: [],
+      players: generatePlayers('team-7', 15, 1).map((p, i) => ({
+        ...p,
+        goals: i === 0 ? 2 : i === 3 ? 1 : 0,
+        assists: i === 2 ? 2 : 0,
+        yellowCards: i === 5 ? 1 : 0
+      })),
       score: 2,
       fouls: 0
     },
@@ -167,7 +172,12 @@ export const matchList: Match[] = [
       id: 'team-8',
       name: '雄狮队',
       color: '#14B8A6',
-      players: [],
+      players: generatePlayers('team-8', 15, 1).map((p, i) => ({
+        ...p,
+        goals: i === 1 ? 1 : 0,
+        assists: i === 4 ? 1 : 0,
+        redCards: i === 7 ? 1 : 0
+      })),
       score: 1,
       fouls: 0
     },
@@ -175,9 +185,108 @@ export const matchList: Match[] = [
     totalPeriods: 2,
     periodDuration: 45,
     currentTime: '90:00',
-    events: [],
+    events: [
+      {
+        id: 'e1',
+        type: 'goal',
+        teamId: 'team-7',
+        playerId: 'team-7-player-1',
+        playerName: '张伟',
+        assistPlayerId: 'team-7-player-3',
+        assistPlayerName: '王磊',
+        time: '12:30',
+        period: 1,
+        description: '张伟接王磊边路传中头球破门'
+      },
+      {
+        id: 'e2',
+        type: 'yellowCard',
+        teamId: 'team-7',
+        playerId: 'team-7-player-6',
+        playerName: '杨杰',
+        time: '28:15',
+        period: 1,
+        description: '杨杰防守犯规吃到黄牌'
+      },
+      {
+        id: 'e3',
+        type: 'goal',
+        teamId: 'team-8',
+        playerId: 'team-8-player-2',
+        playerName: '李强',
+        assistPlayerId: 'team-8-player-5',
+        assistPlayerName: '陈明',
+        time: '35:00',
+        period: 1,
+        description: '李强禁区内推射远角得分'
+      },
+      {
+        id: 'e4',
+        type: 'timeout',
+        teamId: 'team-7',
+        time: '40:00',
+        period: 1,
+        description: '猎豹队请求暂停'
+      },
+      {
+        id: 'e5',
+        type: 'substitution',
+        teamId: 'team-7',
+        playerId: 'team-7-player-4',
+        playerName: '刘洋',
+        time: '55:20',
+        period: 2,
+        description: '刘洋替补登场'
+      },
+      {
+        id: 'e6',
+        type: 'redCard',
+        teamId: 'team-8',
+        playerId: 'team-8-player-8',
+        playerName: '黄涛',
+        time: '68:45',
+        period: 2,
+        description: '黄涛严重犯规被红牌罚下'
+      },
+      {
+        id: 'e7',
+        type: 'dispute',
+        teamId: '',
+        time: '70:00',
+        period: 2,
+        description: '【犯规争议】客队对红牌判罚不满，裁判维持原判',
+        disputeType: 'foul',
+        photos: []
+      },
+      {
+        id: 'e8',
+        type: 'goal',
+        teamId: 'team-7',
+        playerId: 'team-7-player-1',
+        playerName: '张伟',
+        assistPlayerId: 'team-7-player-3',
+        assistPlayerName: '王磊',
+        time: '82:10',
+        period: 2,
+        description: '张伟点球命中梅开二度'
+      },
+      {
+        id: 'e9',
+        type: 'scoreDeduct',
+        teamId: 'team-7',
+        time: '85:00',
+        period: 2,
+        description: '因球员抗议，裁判扣掉猎豹队1个进球'
+      }
+    ],
     isRunning: false,
-    timeouts: { home: 0, away: 1 }
+    timeouts: { home: 0, away: 1 },
+    confirmation: {
+      homeCaptain: { name: '张伟', time: '16:45', signed: true },
+      awayCaptain: { name: '李强', time: '16:48', signed: true },
+      referee: { name: '王裁判', time: '16:50', confirmed: true },
+      confirmedAt: '2024-06-16 16:50'
+    }
   },
   {
     id: 'match-005',
@@ -190,7 +299,7 @@ export const matchList: Match[] = [
       id: 'team-9',
       name: '火箭队',
       color: '#EF4444',
-      players: [],
+      players: generatePlayers('team-9', 12, 0),
       score: 0,
       fouls: 0
     },
@@ -198,7 +307,7 @@ export const matchList: Match[] = [
       id: 'team-10',
       name: '勇士队',
       color: '#3B82F6',
-      players: [],
+      players: generatePlayers('team-10', 12, 0),
       score: 0,
       fouls: 0
     },

@@ -1,0 +1,193 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
+}
+
+.filterBar {
+  display: flex;
+  gap: $spacing-sm;
+  padding: $spacing-md $page-padding;
+  background: $color-bg-card;
+  border-bottom: 1rpx solid $color-border;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.filterItem {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-sm $spacing-md;
+  background: $color-bg-page;
+  border-radius: $radius-md;
+  border: 1rpx solid $color-border;
+
+  .filterText {
+    font-size: $font-size-xs;
+    color: $color-text-secondary;
+    flex: 1;
+    @include text-ellipsis;
+  }
+
+  .filterArrow {
+    font-size: 20rpx;
+    color: $color-text-tertiary;
+    margin-left: $spacing-xs;
+  }
+}
+
+.listContainer {
+  padding: $spacing-md $page-padding;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx $spacing-lg;
+
+  .emptyIcon {
+    font-size: 96rpx;
+    margin-bottom: $spacing-md;
+  }
+
+  .emptyText {
+    font-size: $font-size-sm;
+    color: $color-text-tertiary;
+    text-align: center;
+    line-height: 1.5;
+  }
+}
+
+.matchCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-md;
+  border: 1rpx solid $color-border;
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.98);
+    border-color: $color-primary;
+  }
+}
+
+.matchHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: $spacing-md;
+}
+
+.matchMeta {
+  flex: 1;
+
+  .tournament {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: $spacing-xs;
+    @include text-ellipsis;
+  }
+
+  .info {
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+  }
+}
+
+.statusBadge {
+  padding: 4rpx 12rpx;
+  border-radius: $radius-round;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  background: rgba(14, 165, 233, 0.2);
+  color: $color-primary;
+  flex-shrink: 0;
+  margin-left: $spacing-sm;
+}
+
+.scoreRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-md;
+}
+
+.team {
+  flex: 1;
+  text-align: center;
+
+  .teamName {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: $spacing-xs;
+    @include text-ellipsis;
+  }
+
+  .teamScore {
+    font-size: 48rpx;
+    font-weight: $font-weight-bold;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.vs {
+  padding: 0 $spacing-lg;
+
+  .vsText {
+    font-size: $font-size-sm;
+    color: $color-text-tertiary;
+  }
+}
+
+.matchFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: $spacing-md;
+  border-top: 1rpx solid $color-divider;
+}
+
+.footerInfo {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+
+  .infoItem {
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+
+    .dot {
+      width: 8rpx;
+      height: 8rpx;
+      border-radius: $radius-round;
+      background: $color-text-tertiary;
+    }
+  }
+}
+
+.viewBtn {
+  @include button-reset;
+  padding: $spacing-xs $spacing-md;
+  border-radius: $radius-md;
+  background: $color-primary;
+  color: $color-text-white;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+
+  &:active {
+    opacity: 0.8;
+  }
+}

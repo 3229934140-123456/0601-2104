@@ -16,7 +16,9 @@ export const getEventColor = (type: string): string => {
     redCard: '#EF4444',
     substitution: '#0EA5E9',
     timeout: '#8B5CF6',
-    period: '#F97316'
+    period: '#F97316',
+    dispute: '#F97316',
+    scoreDeduct: '#EC4899'
   };
   return colors[type] || '#64748B';
 };

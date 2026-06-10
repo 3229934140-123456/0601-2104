@@ -1,15 +1,22 @@
 import { create } from 'zustand';
-import type { Match, MatchEvent, Player } from '@/types/match';
-import { currentMatch as initialMatch } from '@/data/mockData';
+import type { Match, MatchEvent, Player, MatchConfirmation } from '@/types/match';
+import { currentMatch as initialMatch, matchList } from '@/data/mockData';
 
 const cloneDeep = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
 const MAX_UNDO_STACK = 50;
 
+const getInitialFinishedMatches = (): Match[] => {
+  return matchList
+    .filter(m => m.status === 'finished')
+    .map(m => cloneDeep(m));
+};
+
 interface MatchState {
   currentMatch: Match;
   selectedMatchId: string | null;
   undoStack: Match[];
+  finishedMatches: Match[];
 
   setCurrentMatch: (match: Match) => void;
   startMatch: () => void;
@@ -23,16 +30,19 @@ interface MatchState {
   addTimeout: (teamType: 'home' | 'away') => void;
   setStarter: (teamId: string, playerId: string, isStarter: boolean) => void;
   updatePlayerStat: (teamId: string, playerId: string, stat: Partial<Player>) => void;
+  setConfirmation: (confirmation: Partial<MatchConfirmation>) => void;
   finishMatch: () => void;
   pushSnapshot: () => void;
   undo: () => void;
   canUndo: () => boolean;
+  loadFinishedMatch: (matchId: string) => void;
 }
 
 export const useMatchStore = create<MatchState>((set, get) => ({
   currentMatch: cloneDeep(initialMatch),
   selectedMatchId: null,
   undoStack: [],
+  finishedMatches: getInitialFinishedMatches(),
 
   pushSnapshot: () => {
     set((state) => {
@@ -214,13 +224,51 @@ export const useMatchStore = create<MatchState>((set, get) => ({
     });
   },
 
-  finishMatch: () => {
+  setConfirmation: (confirmation) => {
     set((state) => ({
       currentMatch: {
         ...state.currentMatch,
-        status: 'finished',
-        isRunning: false
+        confirmation: {
+          ...state.currentMatch.confirmation,
+          ...confirmation
+        } as MatchConfirmation
       }
     }));
+  },
+
+  finishMatch: () => {
+    const now = new Date();
+    const confirmedAt = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+    
+    set((state) => {
+      const finishedMatch = {
+        ...state.currentMatch,
+        status: 'finished' as const,
+        isRunning: false,
+        confirmation: {
+          ...state.currentMatch.confirmation,
+          confirmedAt
+        }
+      };
+      const existingIndex = state.finishedMatches.findIndex(m => m.id === finishedMatch.id);
+      let newFinishedMatches;
+      if (existingIndex >= 0) {
+        newFinishedMatches = [...state.finishedMatches];
+        newFinishedMatches[existingIndex] = finishedMatch;
+      } else {
+        newFinishedMatches = [...state.finishedMatches, finishedMatch];
+      }
+      return {
+        currentMatch: finishedMatch,
+        finishedMatches: newFinishedMatches
+      };
+    });
+  },
+
+  loadFinishedMatch: (matchId) => {
+    const match = get().finishedMatches.find(m => m.id === matchId);
+    if (match) {
+      set({ currentMatch: cloneDeep(match), undoStack: [] });
+    }
   }
 }));

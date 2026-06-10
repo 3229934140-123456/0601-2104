@@ -255,3 +255,24 @@
     color: $color-text-tertiary;
   }
 }
+
+.refereeConfirmBtn {
+  @include button-reset;
+  padding: 0 $spacing-md;
+  height: 56rpx;
+  border-radius: $radius-md;
+  background: $color-primary;
+  color: $color-text-white;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+.checkIcon {
+  font-size: 36rpx;
+  color: $color-success;
+  font-weight: bold;
+}
