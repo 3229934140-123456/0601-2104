@@ -1,0 +1,225 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding: $spacing-md $page-padding;
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
+}
+
+.reportCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  border: 1rpx solid $color-border;
+}
+
+.reportHeader {
+  text-align: center;
+  margin-bottom: $spacing-lg;
+  padding-bottom: $spacing-lg;
+  border-bottom: 1rpx solid $color-divider;
+}
+
+.tournamentName {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-xs;
+}
+
+.reportMeta {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.scoreSection {
+  text-align: center;
+  margin-bottom: $spacing-lg;
+}
+
+.scoreRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-md;
+}
+
+.teamInfo {
+  flex: 1;
+  text-align: center;
+
+  .teamName {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: $spacing-xs;
+    @include text-ellipsis;
+  }
+
+  .teamScore {
+    font-size: 64rpx;
+    font-weight: $font-weight-bold;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.vs {
+  padding: 0 $spacing-lg;
+
+  .vsText {
+    font-size: $font-size-md;
+    color: $color-text-tertiary;
+  }
+}
+
+.sectionTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+  padding-left: $spacing-sm;
+  border-left: 6rpx solid $color-primary;
+}
+
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-sm;
+  margin-bottom: $spacing-md;
+}
+
+.statItem {
+  display: flex;
+  justify-content: space-between;
+  padding: $spacing-sm $spacing-md;
+  background: $color-bg-page;
+  border-radius: $radius-sm;
+
+  .label {
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+  }
+
+  .value {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $color-text-primary;
+  }
+}
+
+.eventList {
+  margin-bottom: $spacing-md;
+}
+
+.eventRow {
+  display: flex;
+  padding: $spacing-sm 0;
+  border-bottom: 1rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.eventTime {
+  width: 80rpx;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  flex-shrink: 0;
+}
+
+.eventTypeBadge {
+  width: 64rpx;
+  text-align: center;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  padding: 2rpx 0;
+  border-radius: $radius-xs;
+  margin-right: $spacing-sm;
+  flex-shrink: 0;
+}
+
+.badgeGoal {
+  background: rgba(34, 197, 94, 0.2);
+  color: $color-success;
+}
+
+.badgeYellow {
+  background: rgba(234, 179, 8, 0.2);
+  color: $color-warning;
+}
+
+.badgeRed {
+  background: rgba(239, 68, 68, 0.2);
+  color: $color-error;
+}
+
+.badgeOther {
+  background: rgba(14, 165, 233, 0.2);
+  color: $color-primary;
+}
+
+.eventDesc {
+  flex: 1;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  @include text-ellipsis;
+}
+
+.confirmInfo {
+  margin-top: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 1rpx solid $color-divider;
+}
+
+.confirmRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: $spacing-sm;
+
+  .label {
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+  }
+
+  .value {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $color-text-primary;
+  }
+}
+
+.bottomActions {
+  position: fixed;
+  bottom: calc(40rpx + env(safe-area-inset-bottom));
+  left: $page-padding;
+  right: $page-padding;
+  display: flex;
+  gap: $spacing-md;
+}
+
+.actionBtn {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.shareBtn {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  color: $color-text-white;
+}
+
+.backBtn {
+  background: $color-bg-card;
+  color: $color-text-secondary;
+  border: 1rpx solid $color-border;
+}

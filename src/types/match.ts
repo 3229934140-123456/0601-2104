@@ -22,7 +22,7 @@ export interface Team {
 
 export interface MatchEvent {
   id: string;
-  type: 'goal' | 'assist' | 'yellowCard' | 'redCard' | 'substitution' | 'timeout' | 'period';
+  type: 'goal' | 'assist' | 'yellowCard' | 'redCard' | 'substitution' | 'timeout' | 'period' | 'dispute' | 'scoreDeduct';
   teamId: string;
   playerId?: string;
   playerName?: string;
@@ -32,6 +32,8 @@ export interface MatchEvent {
   period: number;
   description: string;
   photoUrl?: string;
+  photos?: string[];
+  disputeType?: string;
 }
 
 export interface Match {

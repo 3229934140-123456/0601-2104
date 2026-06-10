@@ -32,18 +32,15 @@ const SchedulePage: React.FC = () => {
   }, [selectedTournament, selectedVenue]);
 
   const handleMatchClick = (match: Match) => {
-    const fullMatch = { ...match, players: [] };
-    if (match.homeTeam.players.length === 0) {
-      const fullMatchData = matchList.find(m => m.id === match.id);
-      if (fullMatchData) {
-        setCurrentMatch(fullMatchData);
-      }
+    const fullMatchData = matchList.find(m => m.id === match.id);
+    if (fullMatchData) {
+      setCurrentMatch(fullMatchData);
     } else {
-      setCurrentMatch(fullMatch);
+      setCurrentMatch(match);
     }
     
-    Taro.switchTab({
-      url: '/pages/scoreboard/index'
+    Taro.navigateTo({
+      url: '/pages/match-detail/index'
     });
   };
 

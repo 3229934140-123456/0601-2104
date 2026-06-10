@@ -102,6 +102,17 @@
   color: $color-warning;
 }
 
+.eventDispute {
+  background: rgba(139, 92, 246, 0.2);
+  color: #8B5CF6;
+}
+
+.assistName {
+  font-size: $font-size-xs;
+  color: $color-primary;
+  margin-left: $spacing-xs;
+}
+
 .playerName {
   font-size: $font-size-sm;
   font-weight: $font-weight-medium;
@@ -121,4 +132,18 @@
   border-radius: $radius-round;
   flex-shrink: 0;
   margin-top: 10rpx;
+}
+
+.photoRow {
+  display: flex;
+  gap: $spacing-xs;
+  margin-top: $spacing-xs;
+  flex-wrap: wrap;
+}
+
+.photoThumb {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: $radius-sm;
+  flex-shrink: 0;
 }

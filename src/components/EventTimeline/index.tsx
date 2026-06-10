@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, ScrollView } from '@tarojs/components';
+import { View, Text, ScrollView, Image } from '@tarojs/components';
+import Taro from '@tarojs/taro';
 import styles from './index.module.scss';
 import type { MatchEvent } from '@/types/match';
 import { getEventLabel } from '@/utils/format';
@@ -19,7 +20,9 @@ const EventTimeline: React.FC<EventTimelineProps> = ({ events, title = '事件�
       redCard: styles.eventRedCard,
       substitution: styles.eventSubstitution,
       timeout: styles.eventTimeout,
-      period: styles.eventPeriod
+      period: styles.eventPeriod,
+      dispute: styles.eventDispute,
+      scoreDeduct: styles.eventPeriod
     };
     return classMap[type] || '';
   };
@@ -28,7 +31,7 @@ const EventTimeline: React.FC<EventTimelineProps> = ({ events, title = '事件�
 
   return (
     <View className={styles.eventTimeline}>
-      <Text className={styles.title}>{title}</Text>
+      {title ? <Text className={styles.title}>{title}</Text> : null}
       
       {events.length === 0 ? (
         <View className={styles.empty}>
@@ -44,7 +47,7 @@ const EventTimeline: React.FC<EventTimelineProps> = ({ events, title = '事件�
               
               <View 
                 className={styles.teamIndicator}
-                style={{ backgroundColor: event.teamId === 'team-home' ? '#3B82F6' : '#F97316' }}
+                style={{ backgroundColor: event.teamId === 'team-home' ? '#3B82F6' : event.teamId === 'team-away' ? '#F97316' : '#8B5CF6' }}
               />
               
               <View className={styles.eventContent}>
@@ -55,8 +58,44 @@ const EventTimeline: React.FC<EventTimelineProps> = ({ events, title = '事件�
                   {event.playerName && (
                     <Text className={styles.playerName}>{event.playerName}</Text>
                   )}
+                  {event.assistPlayerName && (
+                    <Text className={styles.assistName}>助攻: {event.assistPlayerName}</Text>
+                  )}
                 </View>
                 <Text className={styles.description}>{event.description}</Text>
+                {(event.photos && event.photos.length > 0) && (
+                  <View className={styles.photoRow}>
+                    {event.photos.map((photo, idx) => (
+                      <Image
+                        key={idx}
+                        className={styles.photoThumb}
+                        src={photo}
+                        mode='aspectFill'
+                        onClick={() => {
+                          Taro.previewImage({
+                            current: photo,
+                            urls: event.photos!
+                          });
+                        }}
+                      />
+                    ))}
+                  </View>
+                )}
+                {event.photoUrl && (!event.photos || event.photos.length === 0) && (
+                  <View className={styles.photoRow}>
+                    <Image
+                      className={styles.photoThumb}
+                      src={event.photoUrl}
+                      mode='aspectFill'
+                      onClick={() => {
+                        Taro.previewImage({
+                          current: event.photoUrl!,
+                          urls: [event.photoUrl!]
+                        });
+                      }}
+                    />
+                  </View>
+                )}
               </View>
             </View>
           ))}

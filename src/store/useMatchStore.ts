@@ -2,11 +2,15 @@ import { create } from 'zustand';
 import type { Match, MatchEvent, Player } from '@/types/match';
 import { currentMatch as initialMatch } from '@/data/mockData';
 
+const cloneDeep = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
+
+const MAX_UNDO_STACK = 50;
+
 interface MatchState {
   currentMatch: Match;
   selectedMatchId: string | null;
-  eventHistory: MatchEvent[][];
-  
+  undoStack: Match[];
+
   setCurrentMatch: (match: Match) => void;
   startMatch: () => void;
   pauseMatch: () => void;
@@ -16,25 +20,52 @@ interface MatchState {
   addScore: (teamType: 'home' | 'away', points?: number) => void;
   subtractScore: (teamType: 'home' | 'away', points?: number) => void;
   addEvent: (event: MatchEvent) => void;
-  undoEvent: () => void;
   addTimeout: (teamType: 'home' | 'away') => void;
   setStarter: (teamId: string, playerId: string, isStarter: boolean) => void;
   updatePlayerStat: (teamId: string, playerId: string, stat: Partial<Player>) => void;
   finishMatch: () => void;
+  pushSnapshot: () => void;
+  undo: () => void;
+  canUndo: () => boolean;
 }
-
-const cloneDeep = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
 export const useMatchStore = create<MatchState>((set, get) => ({
   currentMatch: cloneDeep(initialMatch),
   selectedMatchId: null,
-  eventHistory: [],
+  undoStack: [],
+
+  pushSnapshot: () => {
+    set((state) => {
+      const newStack = [...state.undoStack, cloneDeep(state.currentMatch)];
+      if (newStack.length > MAX_UNDO_STACK) {
+        newStack.shift();
+      }
+      return { undoStack: newStack };
+    });
+  },
+
+  undo: () => {
+    set((state) => {
+      if (state.undoStack.length === 0) return state;
+      const newStack = [...state.undoStack];
+      const prevMatch = newStack.pop()!;
+      return {
+        currentMatch: prevMatch,
+        undoStack: newStack
+      };
+    });
+  },
+
+  canUndo: () => {
+    return get().undoStack.length > 0;
+  },
 
   setCurrentMatch: (match) => {
-    set({ currentMatch: cloneDeep(match), eventHistory: [] });
+    set({ currentMatch: cloneDeep(match), undoStack: [] });
   },
 
   startMatch: () => {
+    get().pushSnapshot();
     set((state) => ({
       currentMatch: {
         ...state.currentMatch,
@@ -56,7 +87,7 @@ export const useMatchStore = create<MatchState>((set, get) => ({
   resetMatch: () => {
     set({
       currentMatch: cloneDeep(initialMatch),
-      eventHistory: []
+      undoStack: []
     });
   },
 
@@ -70,6 +101,7 @@ export const useMatchStore = create<MatchState>((set, get) => ({
   },
 
   nextPeriod: () => {
+    get().pushSnapshot();
     set((state) => {
       const nextP = state.currentMatch.period + 1;
       if (nextP > state.currentMatch.totalPeriods) {
@@ -122,24 +154,8 @@ export const useMatchStore = create<MatchState>((set, get) => ({
       currentMatch: {
         ...state.currentMatch,
         events: [...state.currentMatch.events, event]
-      },
-      eventHistory: [...state.eventHistory, state.currentMatch.events]
+      }
     }));
-  },
-
-  undoEvent: () => {
-    set((state) => {
-      if (state.eventHistory.length === 0) return state;
-      const newHistory = [...state.eventHistory];
-      const prevEvents = newHistory.pop()!;
-      return {
-        currentMatch: {
-          ...state.currentMatch,
-          events: prevEvents
-        },
-        eventHistory: newHistory
-      };
-    });
   },
 
   addTimeout: (teamType) => {
@@ -160,6 +176,7 @@ export const useMatchStore = create<MatchState>((set, get) => ({
   },
 
   setStarter: (teamId, playerId, isStarter) => {
+    get().pushSnapshot();
     set((state) => {
       const teamKey = teamId === state.currentMatch.homeTeam.id ? 'homeTeam' : 'awayTeam';
       const team = state.currentMatch[teamKey];

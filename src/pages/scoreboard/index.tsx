@@ -17,8 +17,10 @@ const ScoreboardPage: React.FC = () => {
   const subtractScore = useMatchStore((state) => state.subtractScore);
   const nextPeriod = useMatchStore((state) => state.nextPeriod);
   const addEvent = useMatchStore((state) => state.addEvent);
-  const undoEvent = useMatchStore((state) => state.undoEvent);
+  const undo = useMatchStore((state) => state.undo);
+  const canUndo = useMatchStore((state) => state.canUndo);
   const finishMatch = useMatchStore((state) => state.finishMatch);
+  const pushSnapshot = useMatchStore((state) => state.pushSnapshot);
 
   const [seconds, setSeconds] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -82,6 +84,7 @@ const ScoreboardPage: React.FC = () => {
   };
 
   const handleAddScore = (teamType: 'home' | 'away') => {
+    pushSnapshot();
     addScore(teamType, 1);
     
     const team = teamType === 'home' ? currentMatch.homeTeam : currentMatch.awayTeam;
@@ -99,7 +102,20 @@ const ScoreboardPage: React.FC = () => {
   };
 
   const handleSubtractScore = (teamType: 'home' | 'away') => {
+    pushSnapshot();
     subtractScore(teamType, 1);
+    
+    const team = teamType === 'home' ? currentMatch.homeTeam : currentMatch.awayTeam;
+    const event = {
+      id: generateId(),
+      type: 'period' as const,
+      teamId: team.id,
+      time: currentMatch.currentTime,
+      period: currentMatch.period,
+      description: `${team.name} 扣分`
+    };
+    addEvent(event);
+    
     Taro.vibrateShort({ type: 'light' });
   };
 
@@ -140,14 +156,14 @@ const ScoreboardPage: React.FC = () => {
   };
 
   const handleUndo = () => {
-    if (currentMatch.events.length === 0) {
+    if (!canUndo()) {
       Taro.showToast({
         title: '没有可撤销的操作',
         icon: 'none'
       });
       return;
     }
-    undoEvent();
+    undo();
     Taro.showToast({
       title: '已撤销',
       icon: 'success'

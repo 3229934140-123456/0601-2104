@@ -97,15 +97,8 @@ const StatisticsPage: React.FC = () => {
   };
 
   const handleExport = () => {
-    Taro.showToast({
-      title: '成绩单已生成',
-      icon: 'success'
-    });
-    console.log('[Statistics] 导出成绩单:', {
-      match: currentMatch.id,
-      homeTeam: homeTeam.name,
-      awayTeam: awayTeam.name,
-      score: `${homeTeam.score}-${awayTeam.score}`
+    Taro.navigateTo({
+      url: '/pages/score-report/index'
     });
   };
 

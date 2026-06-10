@@ -18,6 +18,7 @@ const disputeTypes = [
 const DisputePage: React.FC = () => {
   const currentMatch = useMatchStore((state) => state.currentMatch);
   const addEvent = useMatchStore((state) => state.addEvent);
+  const pushSnapshot = useMatchStore((state) => state.pushSnapshot);
 
   const [selectedType, setSelectedType] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -55,6 +56,13 @@ const DisputePage: React.FC = () => {
     setPhotos(newPhotos);
   };
 
+  const handlePreviewPhoto = (index: number) => {
+    Taro.previewImage({
+      current: photos[index],
+      urls: photos
+    });
+  };
+
   const handleSubmit = () => {
     if (!selectedType) {
       Taro.showToast({
@@ -74,17 +82,20 @@ const DisputePage: React.FC = () => {
 
     const typeInfo = disputeTypes.find(t => t.type === selectedType);
     
+    pushSnapshot();
+
     const event = {
       id: generateId(),
-      type: 'period',
+      type: 'dispute' as const,
       teamId: '',
       time: currentMatch.currentTime,
       period: currentMatch.period,
       description: `【${typeInfo?.label || '争议'}】${description}`,
-      photoUrl: photos.length > 0 ? photos[0] : undefined
+      photos: photos.length > 0 ? [...photos] : [],
+      disputeType: selectedType
     };
 
-    addEvent(event as any);
+    addEvent(event);
 
     console.log('[Dispute] 提交争议判罚:', {
       type: selectedType,
@@ -147,7 +158,7 @@ const DisputePage: React.FC = () => {
           <Text className={styles.sectionTitle}>现场照片</Text>
           <View className={styles.photoGrid}>
             {photos.map((photo, index) => (
-              <View key={index} className={styles.photoItem}>
+              <View key={index} className={styles.photoItem} onClick={() => handlePreviewPhoto(index)}>
                 <Image
                   className={styles.photoImg}
                   src={photo}
@@ -155,7 +166,7 @@ const DisputePage: React.FC = () => {
                 />
                 <View
                   className={styles.removeBtn}
-                  onClick={() => handleRemovePhoto(index)}
+                  onClick={(e) => { e.stopPropagation(); handleRemovePhoto(index); }}
                 >
                   <Text className={styles.removeText}>×</Text>
                 </View>

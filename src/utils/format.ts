@@ -29,7 +29,9 @@ export const getEventLabel = (type: string): string => {
     redCard: '红牌',
     substitution: '换人',
     timeout: '暂停',
-    period: '节次'
+    period: '节次',
+    dispute: '争议',
+    scoreDeduct: '扣分'
   };
   return labels[type] || type;
 };

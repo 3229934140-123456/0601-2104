@@ -10,16 +10,21 @@ import classnames from 'classnames';
 
 type EventType = 'goal' | 'yellowCard' | 'redCard' | 'substitution' | 'timeout';
 
+type GoalStep = 'selectScorer' | 'selectAssist' | null;
+
 const EventsPage: React.FC = () => {
   const currentMatch = useMatchStore((state) => state.currentMatch);
   const addEvent = useMatchStore((state) => state.addEvent);
   const updatePlayerStat = useMatchStore((state) => state.updatePlayerStat);
   const addTimeout = useMatchStore((state) => state.addTimeout);
   const addScore = useMatchStore((state) => state.addScore);
+  const pushSnapshot = useMatchStore((state) => state.pushSnapshot);
 
   const [selectedTeam, setSelectedTeam] = useState<'home' | 'away'>('home');
   const [selectedEventType, setSelectedEventType] = useState<EventType | null>(null);
   const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
+  const [selectedAssistPlayerId, setSelectedAssistPlayerId] = useState<string | null>(null);
+  const [goalStep, setGoalStep] = useState<GoalStep>(null);
 
   const currentTeam = useMemo(() => {
     return selectedTeam === 'home' ? currentMatch.homeTeam : currentMatch.awayTeam;
@@ -46,11 +51,23 @@ const EventsPage: React.FC = () => {
 
   const handleTeamChange = (team: 'home' | 'away') => {
     setSelectedTeam(team);
+    resetSelection();
+  };
+
+  const resetSelection = () => {
+    setSelectedEventType(null);
     setSelectedPlayerId(null);
+    setSelectedAssistPlayerId(null);
+    setGoalStep(null);
   };
 
   const handleEventTypeSelect = (type: EventType) => {
+    resetSelection();
     setSelectedEventType(type);
+    
+    if (type === 'goal') {
+      setGoalStep('selectScorer');
+    }
     
     if (type === 'timeout') {
       handleAddTimeout();
@@ -59,18 +76,32 @@ const EventsPage: React.FC = () => {
 
   const handlePlayerSelect = (playerId: string) => {
     if (!selectedEventType) {
-      Taro.showToast({
-        title: '请先选择事件类型',
-        icon: 'none'
-      });
+      Taro.showToast({ title: '请先选择事件类型', icon: 'none' });
       return;
     }
     
-    if (selectedEventType === 'timeout') {
+    if (selectedEventType === 'timeout') return;
+
+    if (selectedEventType === 'goal' && goalStep === 'selectScorer') {
+      setSelectedPlayerId(playerId);
+      setGoalStep('selectAssist');
       return;
     }
-    
+
+    if (selectedEventType === 'goal' && goalStep === 'selectAssist') {
+      if (playerId === selectedPlayerId) {
+        Taro.showToast({ title: '助攻球员不能与进球球员相同', icon: 'none' });
+        return;
+      }
+      setSelectedAssistPlayerId(playerId);
+      return;
+    }
+
     setSelectedPlayerId(playerId);
+  };
+
+  const handleSkipAssist = () => {
+    setSelectedAssistPlayerId(null);
   };
 
   const handleAddTimeout = () => {
@@ -78,13 +109,11 @@ const EventsPage: React.FC = () => {
     const remaining = teamType === 'home' ? currentMatch.timeouts.home : currentMatch.timeouts.away;
     
     if (remaining <= 0) {
-      Taro.showToast({
-        title: '暂停次数已用完',
-        icon: 'none'
-      });
+      Taro.showToast({ title: '暂停次数已用完', icon: 'none' });
       return;
     }
 
+    pushSnapshot();
     const team = teamType === 'home' ? currentMatch.homeTeam : currentMatch.awayTeam;
     const event: MatchEvent = {
       id: generateId(),
@@ -98,31 +127,20 @@ const EventsPage: React.FC = () => {
     addEvent(event);
     addTimeout(teamType);
     
-    Taro.showToast({
-      title: '已记录暂停',
-      icon: 'success'
-    });
-    setSelectedEventType(null);
+    Taro.showToast({ title: '已记录暂停', icon: 'success' });
+    resetSelection();
   };
 
   const handleConfirm = () => {
     if (!selectedEventType) {
-      Taro.showToast({
-        title: '请选择事件类型',
-        icon: 'none'
-      });
+      Taro.showToast({ title: '请选择事件类型', icon: 'none' });
       return;
     }
 
-    if (selectedEventType === 'timeout') {
-      return;
-    }
+    if (selectedEventType === 'timeout') return;
 
     if (!selectedPlayerId) {
-      Taro.showToast({
-        title: '请选择球员',
-        icon: 'none'
-      });
+      Taro.showToast({ title: '请选择球员', icon: 'none' });
       return;
     }
 
@@ -132,14 +150,49 @@ const EventsPage: React.FC = () => {
     const team = currentTeam;
     const teamType = selectedTeam;
     let description = '';
-    let playerStatUpdate: any = {};
+    let playerStatUpdate: Partial<{ goals: number; yellowCards: number; redCards: number; assists: number }> = {};
+
+    pushSnapshot();
 
     switch (selectedEventType) {
-      case 'goal':
-        description = `${player.number}号 ${player.name} 进球`;
+      case 'goal': {
+        const assistPlayer = selectedAssistPlayerId
+          ? currentTeam.players.find(p => p.id === selectedAssistPlayerId)
+          : null;
+        
+        description = assistPlayer
+          ? `${player.number}号 ${player.name} 进球（助攻：${assistPlayer.number}号 ${assistPlayer.name}）`
+          : `${player.number}号 ${player.name} 进球`;
+        
         playerStatUpdate = { goals: player.goals + 1 };
         addScore(teamType, 1);
-        break;
+        
+        if (assistPlayer) {
+          updatePlayerStat(team.id, assistPlayer.id, { assists: assistPlayer.assists + 1 });
+        }
+
+        const event: MatchEvent = {
+          id: generateId(),
+          type: 'goal',
+          teamId: team.id,
+          playerId: player.id,
+          playerName: player.name,
+          assistPlayerId: assistPlayer?.id,
+          assistPlayerName: assistPlayer?.name,
+          time: currentMatch.currentTime,
+          period: currentMatch.period,
+          description
+        };
+        addEvent(event);
+        
+        if (Object.keys(playerStatUpdate).length > 0) {
+          updatePlayerStat(team.id, player.id, playerStatUpdate);
+        }
+        
+        Taro.showToast({ title: '进球记录成功', icon: 'success' });
+        resetSelection();
+        return;
+      }
       case 'yellowCard':
         description = `${player.number}号 ${player.name} 黄牌警告`;
         playerStatUpdate = { yellowCards: player.yellowCards + 1 };
@@ -172,13 +225,14 @@ const EventsPage: React.FC = () => {
       updatePlayerStat(team.id, player.id, playerStatUpdate);
     }
 
-    Taro.showToast({
-      title: '记录成功',
-      icon: 'success'
-    });
+    Taro.showToast({ title: '记录成功', icon: 'success' });
+    resetSelection();
+  };
 
-    setSelectedEventType(null);
-    setSelectedPlayerId(null);
+  const getGoalStepHint = () => {
+    if (goalStep === 'selectScorer') return '👉 请选择进球球员';
+    if (goalStep === 'selectAssist') return '👉 请选择助攻球员（可选）';
+    return '';
   };
 
   return (
@@ -220,22 +274,43 @@ const EventsPage: React.FC = () => {
 
         {selectedEventType && selectedEventType !== 'timeout' && (
           <View className={styles.playersSection}>
-            <Text className={styles.sectionTitle}>选择球员</Text>
-            <View className={styles.playersGrid}>
-              {currentTeam.players.filter(p => p.isStarter).map((player) => (
-                <View
-                  key={player.id}
-                  className={classnames(
-                    styles.playerChip,
-                    selectedPlayerId === player.id && styles.playerChipActive
-                  )}
-                  onClick={() => handlePlayerSelect(player.id)}
-                >
-                  <Text className={styles.playerNumber}>{player.number}</Text>
-                  <Text className={styles.playerName}>{player.name}</Text>
-                </View>
-              ))}
+            <View className={styles.sectionTitleRow}>
+              <Text className={styles.sectionTitle}>
+                {selectedEventType === 'goal' ? getGoalStepHint() : '选择球员'}
+              </Text>
             </View>
+            <View className={styles.playersGrid}>
+              {currentTeam.players.filter(p => p.isStarter).map((player) => {
+                const isSelected = player.id === selectedPlayerId || player.id === selectedAssistPlayerId;
+                const isScorer = player.id === selectedPlayerId;
+                const isAssist = player.id === selectedAssistPlayerId;
+                return (
+                  <View
+                    key={player.id}
+                    className={classnames(
+                      styles.playerChip,
+                      isSelected && styles.playerChipActive,
+                      isScorer && styles.playerChipScorer,
+                      isAssist && styles.playerChipAssist
+                    )}
+                    onClick={() => handlePlayerSelect(player.id)}
+                  >
+                    <Text className={styles.playerNumber}>{player.number}</Text>
+                    <Text className={styles.playerName}>{player.name}</Text>
+                    {isScorer && <Text className={styles.playerTag}>进球</Text>}
+                    {isAssist && <Text className={styles.playerTag}>助攻</Text>}
+                  </View>
+                );
+              })}
+            </View>
+
+            {selectedEventType === 'goal' && goalStep === 'selectAssist' && (
+              <View className={styles.assistActions}>
+                <Button className={styles.skipAssistBtn} onClick={handleSkipAssist}>
+                  无助攻，直接确认
+                </Button>
+              </View>
+            )}
           </View>
         )}
 
