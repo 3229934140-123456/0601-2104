@@ -1,0 +1,198 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.teamTabs {
+  display: flex;
+  background: $color-bg-card;
+  margin: $spacing-md $page-padding;
+  border-radius: $radius-lg;
+  padding: 6rpx;
+  border: 1rpx solid $color-border;
+}
+
+.teamTab {
+  flex: 1;
+  text-align: center;
+  padding: $spacing-md 0;
+  border-radius: $radius-md;
+  transition: all $transition-base;
+
+  .tabName {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+  }
+}
+
+.tabActive {
+  background: $color-primary;
+  
+  .tabName {
+    color: $color-text-white;
+  }
+}
+
+.tabInactive {
+  .tabName {
+    color: $color-text-secondary;
+  }
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 $page-padding;
+  margin-bottom: $spacing-sm;
+
+  .sectionTitle {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+  }
+
+  .playerCount {
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+  }
+}
+
+.playerList {
+  padding: 0 $page-padding;
+}
+
+.playerCard {
+  display: flex;
+  align-items: center;
+  padding: $spacing-md;
+  background: $color-bg-card;
+  border-radius: $radius-md;
+  margin-bottom: $spacing-sm;
+  border: 1rpx solid $color-border;
+  transition: all $transition-base;
+
+  &:active {
+    background: $color-bg-card-hover;
+  }
+}
+
+.playerNumber {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: $radius-round;
+  background: $color-bg-card-hover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: $spacing-md;
+  flex-shrink: 0;
+
+  .numberText {
+    font-size: $font-size-md;
+    font-weight: $font-weight-bold;
+    color: $color-primary;
+  }
+}
+
+.starterBadge {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  
+  .numberText {
+    color: $color-text-white;
+  }
+}
+
+.playerInfo {
+  flex: 1;
+  min-width: 0;
+
+  .playerName {
+    font-size: $font-size-md;
+    font-weight: $font-weight-medium;
+    color: $color-text-primary;
+    margin-bottom: 4rpx;
+  }
+
+  .playerPosition {
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+  }
+}
+
+.playerStats {
+  display: flex;
+  gap: $spacing-sm;
+  flex-shrink: 0;
+}
+
+.statBadge {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  padding: 4rpx 10rpx;
+  border-radius: $radius-xs;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+}
+
+.goalBadge {
+  background: rgba(34, 197, 94, 0.15);
+  color: $color-success;
+}
+
+.yellowBadge {
+  background: rgba(234, 179, 8, 0.15);
+  color: $color-warning;
+}
+
+.redBadge {
+  background: rgba(239, 68, 68, 0.15);
+  color: $color-error;
+}
+
+.starterToggle {
+  margin-left: $spacing-md;
+  flex-shrink: 0;
+
+  .toggleLabel {
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+  }
+}
+
+.switch {
+  width: 80rpx;
+  height: 44rpx;
+  border-radius: $radius-round;
+  background: $color-bg-card-hover;
+  position: relative;
+  transition: all $transition-base;
+
+  &.active {
+    background: $color-primary;
+  }
+
+  .switchDot {
+    position: absolute;
+    top: 4rpx;
+    left: 4rpx;
+    width: 36rpx;
+    height: 36rpx;
+    border-radius: 50%;
+    background: $color-text-white;
+    transition: all $transition-base;
+    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.2);
+  }
+
+  &.active .switchDot {
+    left: 40rpx;
+  }
+}
+
+.substituteSection {
+  margin-top: $spacing-lg;
+}

@@ -1,0 +1,132 @@
+@use '@/styles/variables.scss' as *;
+
+.scoreBoard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: 0 4rpx 24rpx rgba(14, 165, 233, 0.1);
+  border: 2rpx solid $color-border;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: $spacing-lg;
+
+  .tournamentName {
+    font-size: $font-size-sm;
+    color: $color-text-tertiary;
+    margin-bottom: $spacing-xs;
+  }
+
+  .venue {
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+  }
+}
+
+.teams {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-lg;
+}
+
+.team {
+  flex: 1;
+  text-align: center;
+
+  .teamName {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: $spacing-sm;
+    @include text-ellipsis;
+  }
+
+  .teamColor {
+    width: 48rpx;
+    height: 8rpx;
+    border-radius: $radius-round;
+    margin: 0 auto $spacing-sm;
+  }
+}
+
+.score {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-md;
+  padding: 0 $spacing-md;
+
+  .scoreValue {
+    font-size: 80rpx;
+    font-weight: $font-weight-bold;
+    color: $color-text-primary;
+    font-variant-numeric: tabular-nums;
+    min-width: 100rpx;
+    text-align: center;
+  }
+
+  .vs {
+    font-size: $font-size-md;
+    color: $color-text-tertiary;
+    font-weight: $font-weight-medium;
+  }
+}
+
+.meta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 1rpx solid $color-border;
+
+  .periodInfo {
+    font-size: $font-size-sm;
+    color: $color-primary;
+    font-weight: $font-weight-medium;
+  }
+
+  .timeInfo {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.timeouts {
+  display: flex;
+  justify-content: space-between;
+  margin-top: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 1rpx solid $color-divider;
+
+  .timeoutBox {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+
+    .label {
+      font-size: $font-size-xs;
+      color: $color-text-tertiary;
+    }
+
+    .dots {
+      display: flex;
+      gap: 6rpx;
+
+      .dot {
+        width: 16rpx;
+        height: 16rpx;
+        border-radius: $radius-round;
+        background: $color-border;
+
+        &.active {
+          background: $color-primary;
+        }
+      }
+    }
+  }
+}

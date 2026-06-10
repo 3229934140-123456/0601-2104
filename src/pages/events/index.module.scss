@@ -1,0 +1,210 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
+}
+
+.teamTabs {
+  display: flex;
+  background: $color-bg-card;
+  margin: $spacing-md $page-padding;
+  border-radius: $radius-lg;
+  padding: 6rpx;
+  border: 1rpx solid $color-border;
+}
+
+.teamTab {
+  flex: 1;
+  text-align: center;
+  padding: $spacing-md 0;
+  border-radius: $radius-md;
+  transition: all $transition-base;
+
+  .tabName {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+  }
+}
+
+.tabActive {
+  background: $color-primary;
+  
+  .tabName {
+    color: $color-text-white;
+  }
+}
+
+.tabInactive {
+  .tabName {
+    color: $color-text-secondary;
+  }
+}
+
+.eventTypes {
+  padding: 0 $page-padding;
+  margin-bottom: $spacing-lg;
+}
+
+.sectionTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+}
+
+.typeGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: $spacing-sm;
+}
+
+.typeItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-md 0;
+  background: $color-bg-card;
+  border-radius: $radius-md;
+  border: 1rpx solid $color-border;
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  .typeIcon {
+    font-size: 40rpx;
+  }
+
+  .typeLabel {
+    font-size: $font-size-xs;
+    color: $color-text-secondary;
+  }
+}
+
+.typeGoal {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: rgba(34, 197, 94, 0.3);
+  
+  .typeLabel {
+    color: $color-success;
+  }
+}
+
+.typeYellow {
+  background: rgba(234, 179, 8, 0.15);
+  border-color: rgba(234, 179, 8, 0.3);
+  
+  .typeLabel {
+    color: $color-warning;
+  }
+}
+
+.typeRed {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  
+  .typeLabel {
+    color: $color-error;
+  }
+}
+
+.typeSub {
+  background: rgba(14, 165, 233, 0.15);
+  border-color: rgba(14, 165, 233, 0.3);
+  
+  .typeLabel {
+    color: $color-primary;
+  }
+}
+
+.typeTimeout {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.3);
+  
+  .typeLabel {
+    color: #8B5CF6;
+  }
+}
+
+.playersSection {
+  padding: 0 $page-padding;
+  margin-bottom: $spacing-lg;
+}
+
+.playersGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+}
+
+.playerChip {
+  padding: $spacing-xs $spacing-md;
+  background: $color-bg-card;
+  border-radius: $radius-round;
+  border: 1rpx solid $color-border;
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  .playerNumber {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    color: $color-primary;
+    margin-right: $spacing-xs;
+  }
+
+  .playerName {
+    font-size: $font-size-xs;
+    color: $color-text-primary;
+  }
+}
+
+.playerChipActive {
+  background: rgba(14, 165, 233, 0.2);
+  border-color: $color-primary;
+}
+
+.timelineSection {
+  padding: 0 $page-padding;
+}
+
+.timelineHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-md;
+}
+
+.eventCount {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.confirmBtn {
+  @include button-reset;
+  position: fixed;
+  bottom: calc(140rpx + env(safe-area-inset-bottom));
+  left: $page-padding;
+  right: $page-padding;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  color: $color-text-white;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  z-index: 10;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}

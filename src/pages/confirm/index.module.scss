@@ -1,0 +1,257 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding: $spacing-md $page-padding;
+  padding-bottom: calc(140rpx + env(safe-area-inset-bottom));
+}
+
+.summaryCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  border: 1rpx solid $color-border;
+  text-align: center;
+}
+
+.matchTitle {
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-md;
+}
+
+.scoreRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-md;
+}
+
+.team {
+  flex: 1;
+  text-align: center;
+
+  .teamName {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: $spacing-xs;
+  }
+
+  .teamScore {
+    font-size: 56rpx;
+    font-weight: $font-weight-bold;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.vs {
+  padding: 0 $spacing-lg;
+  
+  .vsText {
+    font-size: $font-size-md;
+    color: $color-text-tertiary;
+  }
+}
+
+.matchMeta {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  padding-top: $spacing-md;
+  border-top: 1rpx solid $color-divider;
+}
+
+.section {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  border: 1rpx solid $color-border;
+}
+
+.sectionTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+}
+
+.signatureBox {
+  border: 2rpx dashed $color-border;
+  border-radius: $radius-md;
+  height: 200rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: $color-bg-page;
+  margin-bottom: $spacing-md;
+  transition: all $transition-base;
+
+  &.signed {
+    border-style: solid;
+    border-color: $color-success;
+    background: rgba(34, 197, 94, 0.05);
+  }
+}
+
+.signPlaceholder {
+  text-align: center;
+
+  .signIcon {
+    font-size: 48rpx;
+    margin-bottom: $spacing-xs;
+  }
+
+  .signText {
+    font-size: $font-size-sm;
+    color: $color-text-tertiary;
+  }
+}
+
+.signatureContent {
+  text-align: center;
+
+  .signName {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-success;
+    margin-bottom: $spacing-xs;
+  }
+
+  .signTime {
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+  }
+}
+
+.signBtn {
+  @include button-reset;
+  width: 100%;
+  height: $button-height-md;
+  border-radius: $radius-button;
+  background: $color-primary;
+  color: $color-text-white;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &.disabled {
+    background: $color-bg-card-hover;
+    color: $color-text-disabled;
+  }
+}
+
+.statsSummary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-sm;
+}
+
+.statItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-sm $spacing-md;
+  background: $color-bg-page;
+  border-radius: $radius-sm;
+
+  .statLabel {
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+  }
+
+  .statValue {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $color-text-primary;
+  }
+}
+
+.bottomActions {
+  position: fixed;
+  bottom: calc(40rpx + env(safe-area-inset-bottom));
+  left: $page-padding;
+  right: $page-padding;
+  display: flex;
+  gap: $spacing-md;
+}
+
+.actionBtn {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.cancelBtn {
+  background: $color-bg-card;
+  color: $color-text-secondary;
+  border: 1rpx solid $color-border;
+}
+
+.confirmBtn {
+  background: linear-gradient(135deg, $color-success 0%, $color-success-light 100%);
+  color: $color-text-white;
+
+  &.disabled {
+    background: $color-bg-card-hover;
+    color: $color-text-disabled;
+  }
+}
+
+.refereeSection {
+  margin-top: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 1rpx solid $color-divider;
+}
+
+.refereeInfo {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.refereeAvatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: $radius-round;
+  background: $color-primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .avatarText {
+    font-size: $font-size-md;
+    font-weight: $font-weight-bold;
+    color: $color-text-white;
+  }
+}
+
+.refereeDetail {
+  flex: 1;
+
+  .refereeName {
+    font-size: $font-size-md;
+    font-weight: $font-weight-medium;
+    color: $color-text-primary;
+  }
+
+  .refereeRole {
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+  }
+}

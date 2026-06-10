@@ -1,0 +1,209 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding: $spacing-md $page-padding;
+  padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
+}
+
+.scoreSection {
+  margin-bottom: $spacing-lg;
+}
+
+.controlSection {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  border: 1rpx solid $color-border;
+}
+
+.timerControl {
+  display: flex;
+  justify-content: center;
+  gap: $spacing-md;
+  margin-bottom: $spacing-lg;
+}
+
+.controlBtn {
+  @include button-reset;
+  height: $button-height-lg;
+  padding: 0 $spacing-xl;
+  border-radius: $radius-button;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+.startBtn {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  color: $color-text-white;
+  min-width: 200rpx;
+}
+
+.pauseBtn {
+  background: $color-warning;
+  color: $color-text-white;
+  min-width: 200rpx;
+}
+
+.resetBtn {
+  background: $color-bg-card-hover;
+  color: $color-text-secondary;
+  border: 1rpx solid $color-border;
+}
+
+.scoreControls {
+  display: flex;
+  justify-content: space-between;
+  gap: $spacing-lg;
+}
+
+.scoreControlGroup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.teamLabel {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.scoreButtons {
+  display: flex;
+  gap: $spacing-md;
+}
+
+.scoreBtn {
+  @include button-reset;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: $radius-round;
+  font-size: 40rpx;
+  font-weight: $font-weight-bold;
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.92);
+  }
+}
+
+.plusBtn {
+  background: linear-gradient(135deg, $color-success 0%, $color-success-light 100%);
+  color: white;
+}
+
+.minusBtn {
+  background: $color-bg-card-hover;
+  color: $color-text-secondary;
+  border: 1rpx solid $color-border;
+}
+
+.periodControl {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $spacing-md;
+  margin-top: $spacing-lg;
+  padding-top: $spacing-lg;
+  border-top: 1rpx solid $color-divider;
+
+  .periodText {
+    font-size: $font-size-md;
+    color: $color-text-secondary;
+  }
+
+  .nextPeriodBtn {
+    @include button-reset;
+    height: $button-height-md;
+    padding: 0 $spacing-lg;
+    border-radius: $radius-button;
+    background: rgba(14, 165, 233, 0.15);
+    color: $color-primary;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    transition: all $transition-base;
+
+    &:active {
+      transform: scale(0.96);
+    }
+  }
+}
+
+.quickActions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-md;
+  margin-bottom: $spacing-lg;
+}
+
+.actionCard {
+  background: $color-bg-card;
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+  border: 1rpx solid $color-border;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-sm;
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.96);
+    background: $color-bg-card-hover;
+  }
+}
+
+.actionIcon {
+  font-size: 48rpx;
+}
+
+.actionLabel {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+}
+
+.actionDesc {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.bottomActions {
+  display: flex;
+  gap: $spacing-md;
+}
+
+.bottomBtn {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+.undoBtn {
+  background: $color-bg-card;
+  color: $color-text-secondary;
+  border: 1rpx solid $color-border;
+}
+
+.finishBtn {
+  background: linear-gradient(135deg, $color-error 0%, $color-error-light 100%);
+  color: $color-text-white;
+}

@@ -1,0 +1,185 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding: $spacing-md $page-padding;
+  padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
+}
+
+.filterBar {
+  display: flex;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-lg;
+}
+
+.filterItem {
+  flex: 1;
+  background: $color-bg-card;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  border: 1rpx solid $color-border;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all $transition-base;
+
+  &:active {
+    background: $color-bg-card-hover;
+  }
+}
+
+.filterText {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  @include text-ellipsis;
+  flex: 1;
+}
+
+.filterArrow {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-left: $spacing-xs;
+}
+
+.matchList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.matchCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  border: 1rpx solid $color-border;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.1);
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.98);
+    box-shadow: 0 4rpx 20rpx rgba(14, 165, 233, 0.15);
+  }
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-md;
+  padding-bottom: $spacing-md;
+  border-bottom: 1rpx solid $color-divider;
+}
+
+.statusBadge {
+  padding: 6rpx 16rpx;
+  border-radius: $radius-round;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+}
+
+.statusUpcoming {
+  background: rgba(100, 116, 139, 0.2);
+  color: $color-text-tertiary;
+}
+
+.statusOngoing {
+  background: rgba(34, 197, 94, 0.2);
+  color: $color-success;
+}
+
+.statusFinished {
+  background: rgba(14, 165, 233, 0.2);
+  color: $color-primary;
+}
+
+.matchTime {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.teams {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-md;
+}
+
+.team {
+  flex: 1;
+  text-align: center;
+
+  .teamName {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    @include text-ellipsis;
+  }
+
+  .teamColor {
+    width: 40rpx;
+    height: 8rpx;
+    border-radius: $radius-round;
+    margin: 0 auto $spacing-xs;
+  }
+}
+
+.score {
+  padding: 0 $spacing-md;
+  
+  .scoreText {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $color-text-primary;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  padding-top: $spacing-md;
+  border-top: 1rpx solid $color-divider;
+
+  .venueIcon {
+    font-size: $font-size-sm;
+    margin-right: $spacing-xs;
+  }
+
+  .venueName {
+    font-size: $font-size-sm;
+    color: $color-text-tertiary;
+    flex: 1;
+    @include text-ellipsis;
+  }
+
+  .arrow {
+    font-size: $font-size-sm;
+    color: $color-text-tertiary;
+  }
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+
+  .emptyIcon {
+    font-size: 80rpx;
+    margin-bottom: $spacing-md;
+  }
+
+  .emptyText {
+    font-size: $font-size-md;
+    color: $color-text-tertiary;
+  }
+}
+
+.sectionTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+}

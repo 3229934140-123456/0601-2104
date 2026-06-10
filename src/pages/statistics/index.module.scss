@@ -1,0 +1,282 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding: $spacing-md $page-padding;
+  padding-bottom: calc(200rpx + env(safe-area-inset-bottom));
+}
+
+.scoreOverview {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  border: 1rpx solid $color-border;
+  text-align: center;
+}
+
+.matchStatus {
+  display: inline-block;
+  padding: 6rpx 20rpx;
+  border-radius: $radius-round;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  margin-bottom: $spacing-md;
+}
+
+.statusOngoing {
+  background: rgba(34, 197, 94, 0.2);
+  color: $color-success;
+}
+
+.statusFinished {
+  background: rgba(14, 165, 233, 0.2);
+  color: $color-primary;
+}
+
+.statusUpcoming {
+  background: rgba(100, 116, 139, 0.2);
+  color: $color-text-tertiary;
+}
+
+.scoreRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-md;
+}
+
+.teamInfo {
+  flex: 1;
+  text-align: center;
+
+  .teamName {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: $spacing-xs;
+  }
+
+  .teamScore {
+    font-size: 56rpx;
+    font-weight: $font-weight-bold;
+    color: $color-text-primary;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.vsDivider {
+  padding: 0 $spacing-lg;
+  
+  .vsText {
+    font-size: $font-size-md;
+    color: $color-text-tertiary;
+    font-weight: $font-weight-medium;
+  }
+}
+
+.matchMeta {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.statsSection {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  border: 1rpx solid $color-border;
+}
+
+.sectionTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+}
+
+.statItem {
+  margin-bottom: $spacing-md;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.statLabels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: $spacing-xs;
+}
+
+.statValue {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  min-width: 60rpx;
+  text-align: center;
+}
+
+.statName {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.statBar {
+  display: flex;
+  height: 12rpx;
+  border-radius: $radius-round;
+  overflow: hidden;
+  background: $color-bg-card-hover;
+}
+
+.homeBar {
+  background: $color-home;
+  transition: width $transition-base;
+}
+
+.awayBar {
+  background: $color-away;
+  transition: width $transition-base;
+}
+
+.playersSection {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  border: 1rpx solid $color-border;
+  margin-bottom: $spacing-lg;
+  overflow: hidden;
+}
+
+.rankTabs {
+  display: flex;
+  border-bottom: 1rpx solid $color-border;
+}
+
+.rankTab {
+  flex: 1;
+  text-align: center;
+  padding: $spacing-md 0;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  transition: all $transition-base;
+  position: relative;
+
+  &.active {
+    color: $color-primary;
+    font-weight: $font-weight-medium;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 48rpx;
+      height: 4rpx;
+      border-radius: $radius-round;
+      background: $color-primary;
+    }
+  }
+}
+
+.rankList {
+  padding: $spacing-sm 0;
+  max-height: 400rpx;
+  overflow-y: auto;
+}
+
+.rankItem {
+  display: flex;
+  align-items: center;
+  padding: $spacing-sm $spacing-md;
+
+  &:active {
+    background: $color-bg-card-hover;
+  }
+}
+
+.rankNumber {
+  width: 48rpx;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: $color-text-tertiary;
+  text-align: center;
+}
+
+.rankTop {
+  color: $color-warning;
+}
+
+.playerInfo {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+
+  .playerNumber {
+    width: 48rpx;
+    height: 48rpx;
+    border-radius: $radius-round;
+    background: $color-bg-card-hover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    color: $color-primary;
+  }
+
+  .playerName {
+    font-size: $font-size-sm;
+    color: $color-text-primary;
+  }
+
+  .teamName {
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+  }
+}
+
+.rankValue {
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  min-width: 60rpx;
+  text-align: right;
+}
+
+.bottomActions {
+  position: fixed;
+  bottom: calc(120rpx + env(safe-area-inset-bottom));
+  left: $page-padding;
+  right: $page-padding;
+  display: flex;
+  gap: $spacing-md;
+}
+
+.actionBtn {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.exportBtn {
+  background: $color-bg-card;
+  color: $color-primary;
+  border: 1rpx solid $color-primary;
+}
+
+.confirmBtn {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  color: $color-text-white;
+}

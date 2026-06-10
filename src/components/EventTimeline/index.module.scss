@@ -1,0 +1,124 @@
+@use '@/styles/variables.scss' as *;
+
+.eventTimeline {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  border: 1rpx solid $color-border;
+}
+
+.title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+}
+
+.empty {
+  text-align: center;
+  padding: $spacing-xl 0;
+  color: $color-text-tertiary;
+  font-size: $font-size-sm;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  max-height: 600rpx;
+  overflow-y: auto;
+}
+
+.eventItem {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  padding: $spacing-sm 0;
+  border-bottom: 1rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.timeBadge {
+  flex-shrink: 0;
+  padding: 4rpx 12rpx;
+  border-radius: $radius-sm;
+  background: $color-bg-card-hover;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  color: $color-text-secondary;
+  min-width: 70rpx;
+  text-align: center;
+}
+
+.eventContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.eventHeader {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  margin-bottom: 4rpx;
+}
+
+.eventType {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  padding: 2rpx 10rpx;
+  border-radius: $radius-xs;
+}
+
+.eventGoal {
+  background: rgba(34, 197, 94, 0.2);
+  color: $color-success;
+}
+
+.eventYellowCard {
+  background: rgba(234, 179, 8, 0.2);
+  color: $color-warning;
+}
+
+.eventRedCard {
+  background: rgba(239, 68, 68, 0.2);
+  color: $color-error;
+}
+
+.eventSubstitution {
+  background: rgba(14, 165, 233, 0.2);
+  color: $color-primary;
+}
+
+.eventTimeout {
+  background: rgba(139, 92, 246, 0.2);
+  color: #8B5CF6;
+}
+
+.eventPeriod {
+  background: rgba(249, 115, 22, 0.2);
+  color: $color-warning;
+}
+
+.playerName {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  @include text-ellipsis;
+}
+
+.description {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  line-height: 1.4;
+}
+
+.teamIndicator {
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: $radius-round;
+  flex-shrink: 0;
+  margin-top: 10rpx;
+}
